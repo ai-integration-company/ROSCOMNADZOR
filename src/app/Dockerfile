@@ -28,4 +28,4 @@ COPY . .
 
 EXPOSE 8501
 
-CMD ["streamlit", "run", "app.py", "--theme.base='light'"]
+CMD ["streamlit", "run", "app.py", "--theme.base='Light'"]
