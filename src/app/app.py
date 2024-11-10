@@ -47,7 +47,6 @@ def set_png_as_page_bg(png_file):
     st.markdown(page_bg_img, unsafe_allow_html=True)
 
 
-st.set_page_config(theme={"base": "light"})
 set_png_as_page_bg('eagle_blur.png')
 
 
