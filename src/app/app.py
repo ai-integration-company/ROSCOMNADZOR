@@ -1,3 +1,4 @@
+from config import *
 import streamlit as st
 import base64
 import torch
@@ -42,17 +43,17 @@ def set_png_as_page_bg(png_file):
         }
     </style>
     """ % bin_str
-    
+
     st.markdown(page_bg_img, unsafe_allow_html=True)
 
 
+st.set_page_config(theme={"base": "light"})
 set_png_as_page_bg('eagle_blur.png')
 
 
 st.title("AI Integration")
 on = st.toggle("Скриншот")
 
-from config import *
 dimension = 64
 
 device = "cuda" if torch.cuda.is_available() else "cpu"
@@ -62,7 +63,7 @@ trunk = ViTModel.from_pretrained('facebook/dino-vits16')
 trunk_output_size = trunk.config.hidden_size
 trunk = nn.DataParallel(trunk).to(device)
 embedder = nn.DataParallel(Embedder(input_dim=trunk_output_size,
-                                        embedding_dim=dimension)).to(device)
+                                    embedding_dim=dimension)).to(device)
 models = {'trunk': trunk, 'embedder': embedder}
 checkpoint = torch.load(MODEL_CHECKPOINT_PATH, map_location=torch.device(device))
 models['trunk'].load_state_dict(checkpoint['trunk_state_dict'])
@@ -75,13 +76,13 @@ index = faiss.read_index(FAISS_INDEX_PATH)
 with open(IMAGE_IDX_MAP_PATH, 'rb') as f:
     image_paths = pickle.load(f)
 
+
 def get_embedding(image):
     with torch.no_grad():
         image = image_processor(images=image, return_tensors='pt')['pixel_values'].squeeze(0)
         image_vit = trunk(image.unsqueeze(0))
         embedding = embedder(image_vit).cpu().numpy()
     return embedding
-
 
 
 def get_copies(image, image_paths):
@@ -128,7 +129,7 @@ if on:
         for box, label, score in zip(results[0]['boxes'], results[0]['labels'], results[0]['scores']):
             x_min, y_min, x_max, y_max = [float(coord) for coord in box]
             box_area = (x_max - x_min) * (y_max - y_min)
-    
+
             if box_area != original_area and score > max_score:
                 selected_box = (x_min, y_min, x_max, y_max)
                 max_score = score
@@ -136,10 +137,9 @@ if on:
         if selected_box:
             cropped_image = image.crop(selected_box)
             st.header("\nНайденное изображение:")
-            left_co, cent_co,last_co = st.columns(3)
+            left_co, cent_co, last_co = st.columns(3)
             with cent_co:
                 st.image(cropped_image)
-
 
             st.header("\nРанжированные смысловые копии:")
             cols = st.columns(2)
@@ -148,7 +148,7 @@ if on:
 
             i = 0
             for copy in copies:
-                cols[i%2].image(copy)
+                cols[i % 2].image(copy)
                 i += 1
         else:
             st.hear("\nИзображения не найдены.")
@@ -167,6 +167,5 @@ else:
 
         i = 0
         for copy in copies:
-            cols[i%2].image(copy)
+            cols[i % 2].image(copy)
             i += 1
-
