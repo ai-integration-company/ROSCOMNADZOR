@@ -1,0 +1,8 @@
+streamlit
+torch
+torchvision
+pillow==11.0.0
+transformers
+faiss-cpu
+numpy
+gdown
