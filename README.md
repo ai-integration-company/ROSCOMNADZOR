@@ -9,6 +9,6 @@
 1. Клонируйте репозиторий.
 2. Выполните следующие команды
  ```bash
-docker build -t streamlit-app
+docker build -t streamlit-app src/app
 docker run -p 8501:8501 streamlit-app
 ```
