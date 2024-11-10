@@ -1,0 +1,1 @@
+python train_with_captions.py --image_dir ../sekrrno/dataset --epochs_dir ./epochs

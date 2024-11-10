@@ -1,0 +1,1 @@
+python captioning.py --image_dir "../sekrrno/dataset" --output_file "captions.json"
